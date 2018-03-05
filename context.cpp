@@ -23,12 +23,20 @@ void Context::Stop()
     mThread.join();
 }
 
+bool Context::GetNextLine(std::unique_lock<std::mutex>& lk, std::string& line)
+{
+    lk.lock();
+    bool res = !!std::getline(mStream, line);
+    lk.unlock();
+    return res;
+}
+
 void Context::ProcessStream(std::unique_lock<std::mutex>& lk, std::shared_ptr<CommandProcessor> aCommandProcessor)
 {
-    std::string line;
-    while (std::getline(mStream, line))
-        aCommandProcessor->ProcessLine(line);
     lk.unlock();
+    std::string line;
+    while (GetNextLine(lk, line))
+        aCommandProcessor->ProcessLine(line);
 }
 
 void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor)

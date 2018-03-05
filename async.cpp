@@ -29,7 +29,7 @@ static std::shared_ptr<CommandProcessor> CreateInputContext(std::size_t bulkSize
 using ContextMap = std::map<async::handle_t, Context>;
 
 static ContextMap Contexts;
-std::mutex ContextMutex;
+static std::mutex ContextMutex;
 
 static async::handle_t RegisterContext(std::shared_ptr<CommandProcessor> commandProcessor)
 {
