@@ -17,7 +17,7 @@ struct CommandBatch
     std::vector<Command> mCommands;
     Timestamp mTimestamp;
 
-    size_t Size() const
+    std::size_t Size() const
     {
         return mCommands.size();
     }

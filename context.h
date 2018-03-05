@@ -23,9 +23,9 @@ private:
 
     static void ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor);
 
-	std::thread mThread;
+    std::thread mThread;
     std::stringstream mStream;
     std::mutex mStreamMutex;
     std::condition_variable mCondition;
-    std::atomic<bool> mDone{false};    
+    std::atomic<bool> mDone{false};
 };

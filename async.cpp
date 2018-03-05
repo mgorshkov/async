@@ -29,15 +29,18 @@ static std::shared_ptr<CommandProcessor> CreateInputContext(std::size_t bulkSize
 using ContextMap = std::map<async::handle_t, Context>;
 
 static ContextMap Contexts;
+std::mutex ContextMutex;
 
 static async::handle_t RegisterContext(std::shared_ptr<CommandProcessor> commandProcessor)
 {
+    std::lock_guard<std::mutex> lk(ContextMutex);
     Contexts.emplace(std::make_pair(commandProcessor.get(), commandProcessor));
     return commandProcessor.get();
 }
 
 static void RunBulk(async::handle_t handle, const char *data, std::size_t size)
 {
+    std::lock_guard<std::mutex> lk(ContextMutex);
     auto it = Contexts.find(handle);
     if (it == Contexts.end())
         return;
@@ -46,6 +49,7 @@ static void RunBulk(async::handle_t handle, const char *data, std::size_t size)
 
 static void StopBulk(async::handle_t handle)
 {
+    std::lock_guard<std::mutex> lk(ContextMutex);
     auto it = Contexts.find(handle);
     if (it == Contexts.end())
         return;
