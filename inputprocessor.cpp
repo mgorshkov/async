@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include "inputprocessor.h"
 
 InputProcessor::InputProcessor(const CommandProcessors& dependentCommandProcessors)
@@ -6,7 +8,7 @@ InputProcessor::InputProcessor(const CommandProcessors& dependentCommandProcesso
     assert(dependentCommandProcessors.size() != 0);
 }
 
-void InputProcessor::ProcessLine(const std::string& line) override
+void InputProcessor::ProcessLine(const std::string& line)
 {
     if (line == "{")
     {
@@ -30,6 +32,6 @@ void InputProcessor::ProcessLine(const std::string& line) override
     CommandProcessor::ProcessLine(line);
 }
 
-void InputProcessor::DumpCounters() const override
+void InputProcessor::DumpCounters() const
 {
 }

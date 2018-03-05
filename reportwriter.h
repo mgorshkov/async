@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+
+#include "commandprocessor.h"
+
 class ReportWriter : public CommandProcessor
 {
 public:

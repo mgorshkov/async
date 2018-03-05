@@ -1,6 +1,8 @@
+#include <iostream>
+
 #include "commandprocessor.h"
 
-CommandProcessor::CommandProcessor(const std::string& aName, const CommandProcessors& dependentCommandProcessors = CommandProcessors())
+CommandProcessor::CommandProcessor(const std::string& aName, const CommandProcessors& dependentCommandProcessors)
     : mName(aName)
     , mDependentCommandProcessors(dependentCommandProcessors)
 {

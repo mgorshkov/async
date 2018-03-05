@@ -14,7 +14,23 @@ add_library(async SHARED
 	async.cpp
 	async.h
 	batchcommandprocessor.cpp
-	batchcommandprocessor.h)
+	batchcommandprocessor.h
+	commandprocessor.cpp
+	commandprocessor.h
+	consoleoutput.cpp
+	consoleoutput.h
+	context.cpp
+	context.h
+	icommandprocessor.h
+	inputprocessor.cpp
+	inputprocessor.h
+	reportwriter.cpp
+	reportwriter.h
+	structs.h
+	threadedcommandprocessor.h
+	threadedcommandprocessorimpl.h
+	utils.h
+	utils.cpp)
 
 add_executable(async_cli main.cpp)
 

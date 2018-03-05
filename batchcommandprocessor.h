@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "structs.h"
 #include "commandprocessor.h"
 
@@ -17,4 +19,8 @@ public:
 private:
     void ClearBatch();
     void DumpBatch();
+
+    std::size_t mBulkSize;
+    bool mBlockForced;
+    std::vector<Command> mCommandBatch;
 };

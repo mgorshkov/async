@@ -1,11 +1,16 @@
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
 #include "reportwriter.h"
+#include "utils.h"
 
 ReportWriter::ReportWriter(const std::string& aName)
     : CommandProcessor(aName)
 {
 }
 
-void ReportWriter::ProcessBatch(const CommandBatch& commandBatch) override
+void ReportWriter::ProcessBatch(const CommandBatch& commandBatch)
 {
     Command command = MakeCommandFromBatch(commandBatch);
 
@@ -25,8 +30,8 @@ void ReportWriter::ProcessBatch(const CommandBatch& commandBatch) override
 std::string ReportWriter::GetFilename(const Command& command)
 {
     auto seconds = std::chrono::duration_cast<std::chrono::seconds>(
-    command.mTimestamp.time_since_epoch()).count();
-    std::stringstream filename;
+        command.mTimestamp.time_since_epoch()).count();
+    std::ostringstream filename;
     filename << mName << Separator << "bulk" << Separator
         << mCounters.mBlockCounter << Separator << seconds << ".log";
     return filename.str();

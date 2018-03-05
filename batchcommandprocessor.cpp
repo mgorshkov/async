@@ -1,6 +1,6 @@
 #include "batchcommandprocessor.h"
 
-BatchCommandProcessor::BatchCommandProcessor(size_t bulkSize, const CommandProcessors& dependentCommandProcessors)
+BatchCommandProcessor::BatchCommandProcessor(std::size_t bulkSize, const CommandProcessors& dependentCommandProcessors)
     : CommandProcessor("main", dependentCommandProcessors)
     , mBulkSize(bulkSize)
     , mBlockForced(false)

@@ -1,85 +1,18 @@
 #include <map>
 #include <sstream>
+#include <iostream>
 
 #include "threadedcommandprocessor.h"
+#include "threadedcommandprocessorimpl.h"
 #include "consoleoutput.h"
 #include "inputprocessor.h"
 #include "batchcommandprocessor.h"
 #include "reportwriter.h"
+#include "context.h"
 
 #define THREADS 2
 
 #include "async.h"
-
-class Context
-{
-public:
-    Context(std::shared_ptr<CommandProcessor> commandProcessor)
-        : mThread(ThreadProc, this, commandProcessor)
-    {
-    }
-
-    void ProcessData(const char* data, std::size_t size)
-    {
-        {
-            std::lock_guard<std::mutex> lk(mStreamMutex);
-            mStream << std::string(data, size);
-        }
-        mCondition.notify_one();
-    }
-
-    void ProcessStream(std::unique_lock<std::mutex>& lk, CommandProcessor& aCommandProcessor)
-    {
-        std::string line;
-        while (std::getline(mStream, line))
-            aCommandProcessor.ProcessLine(line);
-        lk.unlock();
-    }
-
-    void Stop()
-    {
-        mDone = true;
-        mCondition.notify_one();
-        mThread.join();
-    }
-
-private:
-    static void ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor)
-    {
-        try
-        {
-            while (!aContext->mDone)
-            {
-                std::unique_lock<std::mutex> lk(aContext->mStreamMutex);
-                aContext->mCondition.wait(lk,
-                    [&]()
-                    {
-                        return aContext->mDone;
-                    });
-                aContext->ProcessStream(lk, aCommandProcessor);
-            }
-            {
-                std::unique_lock<std::mutex> lk(aContext->mQueueMutex);
-                aContext->ProcessStream(lk, aCommandProcessor);
-            }
-            aCommandProcessor.Stop();
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << e.what() << std::endl;
-        }
-    }
-
-    std::thread mThread;
-    std::stringstream mStream;
-    std::mutex mStreamMutex;
-    std::condition_variable mCondition;
-    std::atomic<bool> mDone{false};
-};
-
-using ContextMap = std::map<async::handle_t, Context>;
-
-static ContextMap Contexts;
 
 static std::shared_ptr<CommandProcessor> CreateInputContext(std::size_t bulkSize)
 {
@@ -93,36 +26,31 @@ static std::shared_ptr<CommandProcessor> CreateInputContext(std::size_t bulkSize
     return inputCommandProcessor;
 }
 
+using ContextMap = std::map<async::handle_t, Context>;
+
+static ContextMap Contexts;
+
 static async::handle_t RegisterContext(std::shared_ptr<CommandProcessor> commandProcessor)
 {
-    Contexts[commandProcessor.get()] = Context(commandProcessor);
+    Contexts.emplace(std::make_pair(commandProcessor.get(), commandProcessor));
     return commandProcessor.get();
 }
 
-static Context* FindContext(async::handle_t context)
+static void RunBulk(async::handle_t handle, const char *data, std::size_t size)
 {
-    auto it = Contexts.find(context);
-    if (it != Contexts.end())
-        return &*it;
-
-    return nullptr;
+    auto it = Contexts.find(handle);
+    if (it == Contexts.end())
+        return;
+    it->second.ProcessData(data, size);
 }
 
-static void RunBulk(handle_t handle, const char *data, std::size_t size)
+static void StopBulk(async::handle_t handle)
 {
-    auto context = FindContext(handle);
-    if (!context)
+    auto it = Contexts.find(handle);
+    if (it == Contexts.end())
         return;
-    context->ProcessData(data, size);
-}
-
-static void StopBulk(handle_t handle)
-{
-    auto context = FindContext(handle);
-    if (!context)
-        return;
-    context->Stop();
-    Contexts.erase(*context);
+    it->second.Stop();
+    Contexts.erase(it);
 }
 
 namespace async

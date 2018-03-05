@@ -1,27 +1,8 @@
 #include "threadedcommandprocessor.h"
 
-static std::string Join(const std::vector<Command>& v)
-{
-    std::stringstream ss;
-    for(size_t i = 0; i < v.size(); ++i)
-    {
-        if(i != 0)
-            ss << ", ";
-        ss << v[i].mText;
-    }
-    return ss.str();
-}
-
-static Command MakeCommandFromBatch(const CommandBatch& aCommandBatch)
-{
-    std::string output = "bulk: " + Join(aCommandBatch.mCommands);
-    Command command{output, aCommandBatch.mTimestamp};
-    return command;
-}
-
 /// Starts one thread for each dependent CommandProcessor
 template <typename DependentProcessor>
-ThreadedCommandProcessor<DependentProcessor>::ThreadedCommandProcessor(const std::string& aName, int aThreads = 1)
+ThreadedCommandProcessor<DependentProcessor>::ThreadedCommandProcessor(const std::string& aName, int aThreads)
     : CommandProcessor("main")
 {
     for (int i = 0; i < aThreads; ++i)
@@ -33,7 +14,7 @@ ThreadedCommandProcessor<DependentProcessor>::ThreadedCommandProcessor(const std
 }
 
 template <typename DependentProcessor>
-void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBatch& commandBatch) override
+void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBatch& commandBatch)
 {
     if (mDone)
         return;
@@ -46,7 +27,7 @@ void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBat
 }
 
 template <typename DependentProcessor>
-void ThreadedCommandProcessor<DependentProcessor>::Stop() override
+void ThreadedCommandProcessor<DependentProcessor>::Stop()
 {
     mDone = true;
     mCondition.notify_all();
@@ -56,7 +37,7 @@ void ThreadedCommandProcessor<DependentProcessor>::Stop() override
 }
 
 template <typename DependentProcessor>
-void ThreadedCommandProcessor<DependentProcessor>::DumpCounters() const override {}
+void ThreadedCommandProcessor<DependentProcessor>::DumpCounters() const {}
 
 template <typename DependentProcessor>
 void ThreadedCommandProcessor<DependentProcessor>::ThreadProc(ThreadedCommandProcessor* aProcessor, const std::string& aName)
