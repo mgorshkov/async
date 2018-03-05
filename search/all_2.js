@@ -14,6 +14,5 @@ var searchData=
   ['context_2ecpp',['context.cpp',['../context_8cpp.html',1,'']]],
   ['context_2eh',['context.h',['../context_8h.html',1,'']]],
   ['contextmap',['ContextMap',['../async_8cpp.html#a19706af6504a3d586328290c29416d8f',1,'async.cpp']]],
-  ['contextmutex',['ContextMutex',['../async_8cpp.html#afedfb55e834eb1bed48e755e72984339',1,'async.cpp']]],
   ['counters',['Counters',['../structCounters.html',1,'']]]
 ];
