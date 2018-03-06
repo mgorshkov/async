@@ -29,11 +29,23 @@ void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBat
 template <typename DependentProcessor>
 void ThreadedCommandProcessor<DependentProcessor>::Stop()
 {
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop()" << this << std::endl;
+#endif
     mDone = true;
     mCondition.notify_all();
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop2()" << this << std::endl;
+#endif
     for (auto& thread : mThreads)
         thread.join();
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop3()" << this << std::endl;
+#endif
     CommandProcessor::Stop();
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop4()" << this << std::endl;
+#endif
 }
 
 template <typename DependentProcessor>

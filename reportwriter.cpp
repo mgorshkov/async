@@ -2,6 +2,11 @@
 #include <sstream>
 #include <fstream>
 
+#ifdef EXPERIMENT_PART1
+#include <numeric>
+#include <algorithm>
+#endif
+
 #include "reportwriter.h"
 #include "utils.h"
 

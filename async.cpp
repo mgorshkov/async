@@ -44,7 +44,8 @@ static void RunBulk(async::handle_t handle, const char *data, std::size_t size)
     auto it = Contexts.find(handle);
     if (it == Contexts.end())
         return;
-    it->second.ProcessData(data, size);
+    auto& context = it->second;
+    context.ProcessData(data, size);
 }
 
 static void StopBulk(async::handle_t handle)
@@ -53,7 +54,8 @@ static void StopBulk(async::handle_t handle)
     auto it = Contexts.find(handle);
     if (it == Contexts.end())
         return;
-    it->second.Stop();
+    auto& context = it->second;
+    context.Stop();
     Contexts.erase(it);
 }
 

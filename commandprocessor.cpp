@@ -51,9 +51,18 @@ void CommandProcessor::ProcessBatch(const CommandBatch& commandBatch)
 
 void CommandProcessor::Stop()
 {
+#ifdef DEBUG_PRINT
+    std::cout << "CommandProcessor::Stop1()" << this << std::endl;
+#endif
     DumpCounters();
+#ifdef DEBUG_PRINT
+    std::cout << "CommandProcessor::Stop2()" << this << std::endl;
+#endif
     for (auto dependentCommandProcessor : mDependentCommandProcessors)
         dependentCommandProcessor->Stop();
+#ifdef DEBUG_PRINT
+    std::cout << "CommandProcessor::Stop3()" << this << std::endl;
+#endif
 }
 
 void CommandProcessor::DumpCounters() const
