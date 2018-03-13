@@ -26,7 +26,7 @@ static std::shared_ptr<CommandProcessor> CreateInputContext(std::size_t bulkSize
     return inputCommandProcessor;
 }
 
-using ContextMap = std::map<async::handle_t, Context>;
+using ContextMap = std::map<async::handle_t, std::shared_ptr<Context>>;
 
 static ContextMap Contexts;
 static std::mutex ContextMutex;
@@ -34,7 +34,7 @@ static std::mutex ContextMutex;
 static async::handle_t RegisterContext(std::shared_ptr<CommandProcessor> commandProcessor)
 {
     std::lock_guard<std::mutex> lk(ContextMutex);
-    Contexts.emplace(std::make_pair(commandProcessor.get(), commandProcessor));
+    Contexts.emplace(std::make_pair(commandProcessor.get(), std::make_shared<Context>(commandProcessor)));
     return commandProcessor.get();
 }
 
@@ -45,7 +45,7 @@ static void RunBulk(async::handle_t handle, const char *data, std::size_t size)
     if (it == Contexts.end())
         return;
     auto& context = it->second;
-    context.ProcessData(data, size);
+    context->ProcessData(data, size);
 }
 
 static void StopBulk(async::handle_t handle)
@@ -55,7 +55,7 @@ static void StopBulk(async::handle_t handle)
     if (it == Contexts.end())
         return;
     auto& context = it->second;
-    context.Stop();
+    context->Stop();
     Contexts.erase(it);
 }
 
