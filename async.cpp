@@ -40,23 +40,35 @@ static async::handle_t RegisterContext(std::shared_ptr<CommandProcessor> command
 
 static void RunBulk(async::handle_t handle, const char *data, std::size_t size)
 {
-    std::lock_guard<std::mutex> lk(ContextMutex);
-    auto it = Contexts.find(handle);
-    if (it == Contexts.end())
-        return;
-    auto& context = it->second;
+    std::shared_ptr<Context> context;
+    {
+        std::lock_guard<std::mutex> lk(ContextMutex);
+        auto it = Contexts.find(handle);
+        if (it == Contexts.end())
+            return;
+        context = it->second;
+    }
     context->ProcessData(data, size);
 }
 
 static void StopBulk(async::handle_t handle)
 {
-    std::lock_guard<std::mutex> lk(ContextMutex);
-    auto it = Contexts.find(handle);
-    if (it == Contexts.end())
-        return;
-    auto& context = it->second;
+    std::shared_ptr<Context> context;
+    {
+        std::lock_guard<std::mutex> lk(ContextMutex);
+        auto it = Contexts.find(handle);
+        if (it == Contexts.end())
+            return;
+        context = it->second;
+    }
     context->Stop();
-    Contexts.erase(it);
+    {
+        std::lock_guard<std::mutex> lk(ContextMutex);
+        auto it = Contexts.find(handle);
+        if (it == Contexts.end())
+            return;
+        Contexts.erase(it);
+    }
 }
 
 namespace async
