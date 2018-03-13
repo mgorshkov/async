@@ -38,7 +38,8 @@ void ThreadedCommandProcessor<DependentProcessor>::Stop()
     std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop2()" << this << std::endl;
 #endif
     for (auto& thread : mThreads)
-        thread.join();
+        if (thread.joinable())
+            thread.join();
 #ifdef DEBUG_PRINT
     std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop3()" << this << std::endl;
 #endif
