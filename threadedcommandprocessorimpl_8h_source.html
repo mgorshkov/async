@@ -123,63 +123,64 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span>    std::cout &lt;&lt; <span class="stringliteral">&quot;ThreadedCommandProcessor&lt;DependentProcessor&gt;::Stop2()&quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor"></span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; thread : mThreads)</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        thread.join();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#ifdef DEBUG_PRINT</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor"></span>    std::cout &lt;&lt; <span class="stringliteral">&quot;ThreadedCommandProcessor&lt;DependentProcessor&gt;::Stop3()&quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor"></span>    <a class="code" href="classCommandProcessor.html#ab72537797793061c66374da42f1944cd">CommandProcessor::Stop</a>();</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#ifdef DEBUG_PRINT</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor"></span>    std::cout &lt;&lt; <span class="stringliteral">&quot;ThreadedCommandProcessor&lt;DependentProcessor&gt;::Stop4()&quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependentProcessor&gt;</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">   52</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">ThreadedCommandProcessor&lt;DependentProcessor&gt;::DumpCounters</a>()<span class="keyword"> const </span>{}</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependentProcessor&gt;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor&lt;DependentProcessor&gt;::ThreadProc</a>(<a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor</a>* aProcessor, <span class="keyword">const</span> std::string&amp; aName)</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        DependentProcessor dependentProcessor(aName);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordflow">while</span> (!aProcessor-&gt;mDone)</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            std::unique_lock&lt;std::mutex&gt; lk(aProcessor-&gt;mQueueMutex);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            aProcessor-&gt;mCondition.wait(lk,</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                [&amp;]()</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                    <span class="keywordflow">return</span> !aProcessor-&gt;mQueue.empty() || aProcessor-&gt;mDone;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                });</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            aProcessor-&gt;ProcessQueue(lk, dependentProcessor);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        }</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            std::unique_lock&lt;std::mutex&gt; lk(aProcessor-&gt;mQueueMutex);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            aProcessor-&gt;ProcessQueue(lk, dependentProcessor);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        dependentProcessor.Stop();</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp;e)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        std::cerr &lt;&lt; e.what() &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependentProcessor&gt;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor&lt;DependentProcessor&gt;::ProcessQueue</a>(std::unique_lock&lt;std::mutex&gt;&amp; lk, <a class="code" href="classCommandProcessor.html">CommandProcessor</a>&amp; aDependentProcessor)</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;{</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    std::queue&lt;CommandBatch&gt; queue;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    std::swap(mQueue, queue);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    lk.unlock();</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordflow">while</span> (!queue.empty())</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">auto</span> commandBatch = queue.front();</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        queue.pop();</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        aDependentProcessor.<a class="code" href="classCommandProcessor.html#ad5ab6f6aadc531d8a5b9a00f5c6745d4">ProcessBatch</a>(commandBatch);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span> (thread.joinable())</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            thread.join();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#ifdef DEBUG_PRINT</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor"></span>    std::cout &lt;&lt; <span class="stringliteral">&quot;ThreadedCommandProcessor&lt;DependentProcessor&gt;::Stop3()&quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span>    <a class="code" href="classCommandProcessor.html#ab72537797793061c66374da42f1944cd">CommandProcessor::Stop</a>();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#ifdef DEBUG_PRINT</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor"></span>    std::cout &lt;&lt; <span class="stringliteral">&quot;ThreadedCommandProcessor&lt;DependentProcessor&gt;::Stop4()&quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependentProcessor&gt;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">   53</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">ThreadedCommandProcessor&lt;DependentProcessor&gt;::DumpCounters</a>()<span class="keyword"> const </span>{}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependentProcessor&gt;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor&lt;DependentProcessor&gt;::ThreadProc</a>(<a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor</a>* aProcessor, <span class="keyword">const</span> std::string&amp; aName)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;{</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        DependentProcessor dependentProcessor(aName);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">while</span> (!aProcessor-&gt;mDone)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            std::unique_lock&lt;std::mutex&gt; lk(aProcessor-&gt;mQueueMutex);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            aProcessor-&gt;mCondition.wait(lk,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                [&amp;]()</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                    <span class="keywordflow">return</span> !aProcessor-&gt;mQueue.empty() || aProcessor-&gt;mDone;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                });</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            aProcessor-&gt;ProcessQueue(lk, dependentProcessor);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            std::unique_lock&lt;std::mutex&gt; lk(aProcessor-&gt;mQueueMutex);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            aProcessor-&gt;ProcessQueue(lk, dependentProcessor);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        dependentProcessor.Stop();</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp;e)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        std::cerr &lt;&lt; e.what() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependentProcessor&gt;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor&lt;DependentProcessor&gt;::ProcessQueue</a>(std::unique_lock&lt;std::mutex&gt;&amp; lk, <a class="code" href="classCommandProcessor.html">CommandProcessor</a>&amp; aDependentProcessor)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;{</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    std::queue&lt;CommandBatch&gt; queue;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    std::swap(mQueue, queue);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    lk.unlock();</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">while</span> (!queue.empty())</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keyword">auto</span> commandBatch = queue.front();</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        queue.pop();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        aDependentProcessor.<a class="code" href="classCommandProcessor.html#ad5ab6f6aadc531d8a5b9a00f5c6745d4">ProcessBatch</a>(commandBatch);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
 <div class="ttc" id="classCommandProcessor_html_ab72537797793061c66374da42f1944cd"><div class="ttname"><a href="classCommandProcessor.html#ab72537797793061c66374da42f1944cd">CommandProcessor::Stop</a></div><div class="ttdeci">void Stop() override</div><div class="ttdef"><b>Definition:</b> commandprocessor.cpp:52</div></div>
-<div class="ttc" id="classThreadedCommandProcessor_html_adab3dbb5c727a4cf59be8dea462b2b6d"><div class="ttname"><a href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">ThreadedCommandProcessor::DumpCounters</a></div><div class="ttdeci">void DumpCounters() const override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:52</div></div>
+<div class="ttc" id="classThreadedCommandProcessor_html_adab3dbb5c727a4cf59be8dea462b2b6d"><div class="ttname"><a href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">ThreadedCommandProcessor::DumpCounters</a></div><div class="ttdeci">void DumpCounters() const override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:53</div></div>
 <div class="ttc" id="classThreadedCommandProcessor_html_a95d4f3e4b770522ea8913e15e2d1b29f"><div class="ttname"><a href="classThreadedCommandProcessor.html#a95d4f3e4b770522ea8913e15e2d1b29f">ThreadedCommandProcessor::Stop</a></div><div class="ttdeci">void Stop() override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:30</div></div>
 <div class="ttc" id="threadedcommandprocessor_8h_html"><div class="ttname"><a href="threadedcommandprocessor_8h.html">threadedcommandprocessor.h</a></div></div>
 <div class="ttc" id="classThreadedCommandProcessor_html"><div class="ttname"><a href="classThreadedCommandProcessor.html">ThreadedCommandProcessor</a></div><div class="ttdoc">Starts one thread for each dependent CommandProcessor. </div><div class="ttdef"><b>Definition:</b> threadedcommandprocessor.h:14</div></div>
