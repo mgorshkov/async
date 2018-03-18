@@ -31,7 +31,6 @@ private:
     std::queue<CommandBatch> mQueue;
     std::condition_variable mCondition;
     std::mutex mQueueMutex;
-    std::atomic_bool mNotified{false};
     std::atomic_bool mDone{false};
 
     std::vector<std::thread> mThreads;

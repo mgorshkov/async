@@ -37,7 +37,6 @@ void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBat
         std::lock_guard<std::mutex> lk(mQueueMutex);
         mQueue.push(commandBatch);
     }
-    mNotified = true;
     mCondition.notify_all();
 #ifdef DEBUG_PRINT
     std::cout << "ThreadedCommandProcessor notified, this==" << this << std::endl;
@@ -52,7 +51,6 @@ void ThreadedCommandProcessor<DependentProcessor>::Stop()
     std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop()" << this << std::endl;
 #endif
     mDone = true;
-    mNotified = true;
     mCondition.notify_all();
 #ifdef DEBUG_PRINT
     std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop2()" << this << std::endl;
@@ -84,10 +82,9 @@ void ThreadedCommandProcessor<DependentProcessor>::ThreadProc(ThreadedCommandPro
         while (!aProcessor->mDone.load())
         {
             std::unique_lock<std::mutex> lk(aProcessor->mQueueMutex);
-            while (aProcessor->mQueue.empty() && !aProcessor->mNotified.load())
+            while (aProcessor->mQueue.empty() && !aProcessor->mDone.load())
                 aProcessor->mCondition.wait(lk);
             aProcessor->ProcessQueue(lk, dependentProcessor);
-            aProcessor->mNotified = false;
         }
         {
             std::unique_lock<std::mutex> lk(aProcessor->mQueueMutex);
