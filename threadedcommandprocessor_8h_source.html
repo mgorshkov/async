@@ -100,32 +100,35 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="classThreadedCommandProcessor.html#a4d45695fb240a79831ce474483f76e78">ThreadedCommandProcessor</a>(<span class="keyword">const</span> std::string&amp; aName, <span class="keywordtype">int</span> aThreads = 1);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#a85dcf0052dbfb71d1a11d4f12cab279d">ProcessBatch</a>(<span class="keyword">const</span> <a class="code" href="structCommandBatch.html">CommandBatch</a>&amp; commandBatch) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#a95d4f3e4b770522ea8913e15e2d1b29f">Stop</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">DumpCounters</a>() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> ThreadProc(<a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor</a>* aProcessor, <span class="keyword">const</span> std::string&amp; aName);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> ProcessQueue(std::unique_lock&lt;std::mutex&gt;&amp; lk, <a class="code" href="classCommandProcessor.html">CommandProcessor</a>&amp; aDependentProcessor);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    std::queue&lt;CommandBatch&gt; mQueue;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    std::condition_variable mCondition;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::mutex mQueueMutex;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::atomic&lt;bool&gt; mDone{<span class="keyword">false</span>};</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::vector&lt;std::thread&gt; mThreads;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;};</div>
-<div class="ttc" id="classThreadedCommandProcessor_html_adab3dbb5c727a4cf59be8dea462b2b6d"><div class="ttname"><a href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">ThreadedCommandProcessor::DumpCounters</a></div><div class="ttdeci">void DumpCounters() const override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:53</div></div>
-<div class="ttc" id="classThreadedCommandProcessor_html_a95d4f3e4b770522ea8913e15e2d1b29f"><div class="ttname"><a href="classThreadedCommandProcessor.html#a95d4f3e4b770522ea8913e15e2d1b29f">ThreadedCommandProcessor::Stop</a></div><div class="ttdeci">void Stop() override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:30</div></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classThreadedCommandProcessor.html#a375579af68fcfd251d5efbd2c0b3cea4">~ThreadedCommandProcessor</a>();</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#a85dcf0052dbfb71d1a11d4f12cab279d">ProcessBatch</a>(<span class="keyword">const</span> <a class="code" href="structCommandBatch.html">CommandBatch</a>&amp; commandBatch) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#a95d4f3e4b770522ea8913e15e2d1b29f">Stop</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">DumpCounters</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> ThreadProc(<a class="code" href="classThreadedCommandProcessor.html">ThreadedCommandProcessor</a>* aProcessor, <span class="keyword">const</span> std::string&amp; aName);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">void</span> ProcessQueue(std::unique_lock&lt;std::mutex&gt;&amp; lk, <a class="code" href="classCommandProcessor.html">CommandProcessor</a>&amp; aDependentProcessor);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    std::queue&lt;CommandBatch&gt; mQueue;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::condition_variable mCondition;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::mutex mQueueMutex;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    std::atomic_bool mNotified{<span class="keyword">false</span>};</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::atomic_bool mDone{<span class="keyword">false</span>};</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::vector&lt;std::thread&gt; mThreads;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;};</div>
+<div class="ttc" id="classThreadedCommandProcessor_html_adab3dbb5c727a4cf59be8dea462b2b6d"><div class="ttname"><a href="classThreadedCommandProcessor.html#adab3dbb5c727a4cf59be8dea462b2b6d">ThreadedCommandProcessor::DumpCounters</a></div><div class="ttdeci">void DumpCounters() const override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:73</div></div>
+<div class="ttc" id="classThreadedCommandProcessor_html_a95d4f3e4b770522ea8913e15e2d1b29f"><div class="ttname"><a href="classThreadedCommandProcessor.html#a95d4f3e4b770522ea8913e15e2d1b29f">ThreadedCommandProcessor::Stop</a></div><div class="ttdeci">void Stop() override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:49</div></div>
 <div class="ttc" id="classThreadedCommandProcessor_html"><div class="ttname"><a href="classThreadedCommandProcessor.html">ThreadedCommandProcessor</a></div><div class="ttdoc">Starts one thread for each dependent CommandProcessor. </div><div class="ttdef"><b>Definition:</b> threadedcommandprocessor.h:14</div></div>
 <div class="ttc" id="classCommandProcessor_html"><div class="ttname"><a href="classCommandProcessor.html">CommandProcessor</a></div><div class="ttdef"><b>Definition:</b> commandprocessor.h:12</div></div>
 <div class="ttc" id="classThreadedCommandProcessor_html_a4d45695fb240a79831ce474483f76e78"><div class="ttname"><a href="classThreadedCommandProcessor.html#a4d45695fb240a79831ce474483f76e78">ThreadedCommandProcessor::ThreadedCommandProcessor</a></div><div class="ttdeci">ThreadedCommandProcessor(const std::string &amp;aName, int aThreads=1)</div><div class="ttdoc">Starts one thread for each dependent CommandProcessor. </div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:5</div></div>
-<div class="ttc" id="classThreadedCommandProcessor_html_a85dcf0052dbfb71d1a11d4f12cab279d"><div class="ttname"><a href="classThreadedCommandProcessor.html#a85dcf0052dbfb71d1a11d4f12cab279d">ThreadedCommandProcessor::ProcessBatch</a></div><div class="ttdeci">void ProcessBatch(const CommandBatch &amp;commandBatch) override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:17</div></div>
+<div class="ttc" id="classThreadedCommandProcessor_html_a85dcf0052dbfb71d1a11d4f12cab279d"><div class="ttname"><a href="classThreadedCommandProcessor.html#a85dcf0052dbfb71d1a11d4f12cab279d">ThreadedCommandProcessor::ProcessBatch</a></div><div class="ttdeci">void ProcessBatch(const CommandBatch &amp;commandBatch) override</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:29</div></div>
 <div class="ttc" id="structCommandBatch_html"><div class="ttname"><a href="structCommandBatch.html">CommandBatch</a></div><div class="ttdef"><b>Definition:</b> structs.h:15</div></div>
+<div class="ttc" id="classThreadedCommandProcessor_html_a375579af68fcfd251d5efbd2c0b3cea4"><div class="ttname"><a href="classThreadedCommandProcessor.html#a375579af68fcfd251d5efbd2c0b3cea4">ThreadedCommandProcessor::~ThreadedCommandProcessor</a></div><div class="ttdeci">~ThreadedCommandProcessor()</div><div class="ttdef"><b>Definition:</b> threadedcommandprocessorimpl.h:20</div></div>
 <div class="ttc" id="commandprocessor_8h_html"><div class="ttname"><a href="commandprocessor_8h.html">commandprocessor.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
