@@ -48,7 +48,7 @@ set(CMAKE_CXX_FLAGS "-std=c++1z")
 target_link_libraries(async Threads::Threads)
 target_link_libraries(async_cli async)
 
-install(TARGETS async DESTINATION bin)
+install(TARGETS async DESTINATION lib)
 install(TARGETS async_cli DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
