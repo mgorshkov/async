@@ -15,6 +15,7 @@ class ThreadedCommandProcessor : public CommandProcessor
 {
 public:
     ThreadedCommandProcessor(const std::string& aName, int aThreads = 1);
+    ~ThreadedCommandProcessor();
 
     void ProcessBatch(const CommandBatch& commandBatch) override;
 
@@ -30,7 +31,8 @@ private:
     std::queue<CommandBatch> mQueue;
     std::condition_variable mCondition;
     std::mutex mQueueMutex;
-    std::atomic<bool> mDone{false};
+    std::atomic_bool mNotified{false};
+    std::atomic_bool mDone{false};
 
     std::vector<std::thread> mThreads;
 };

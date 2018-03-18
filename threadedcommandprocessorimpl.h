@@ -5,6 +5,9 @@ template <typename DependentProcessor>
 ThreadedCommandProcessor<DependentProcessor>::ThreadedCommandProcessor(const std::string& aName, int aThreads)
     : CommandProcessor("main")
 {
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor::ThreadedCommandProcessor, this==" << this << std::endl;
+#endif
     for (int i = 0; i < aThreads; ++i)
     {
         std::stringstream name;
@@ -13,16 +16,32 @@ ThreadedCommandProcessor<DependentProcessor>::ThreadedCommandProcessor(const std
     }
 }
 
+template<typename DependentProcessor>
+ThreadedCommandProcessor<DependentProcessor>::~ThreadedCommandProcessor()
+{
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor::~ThreadedCommandProcessor, this==" << this << std::endl;
+#endif
+    Stop();
+}
+
 template <typename DependentProcessor>
 void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBatch& commandBatch)
 {
-    if (mDone)
+    if (mDone.load())
         return;
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor notified - start, this==" << this << std::endl;
+#endif
     {
         std::lock_guard<std::mutex> lk(mQueueMutex);
         mQueue.push(commandBatch);
     }
+    mNotified = true;
     mCondition.notify_all();
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor notified, this==" << this << std::endl;
+#endif
     CommandProcessor::ProcessBatch(commandBatch);
 }
 
@@ -33,6 +52,7 @@ void ThreadedCommandProcessor<DependentProcessor>::Stop()
     std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop()" << this << std::endl;
 #endif
     mDone = true;
+    mNotified = true;
     mCondition.notify_all();
 #ifdef DEBUG_PRINT
     std::cout << "ThreadedCommandProcessor<DependentProcessor>::Stop2()" << this << std::endl;
@@ -55,18 +75,19 @@ void ThreadedCommandProcessor<DependentProcessor>::DumpCounters() const {}
 template <typename DependentProcessor>
 void ThreadedCommandProcessor<DependentProcessor>::ThreadProc(ThreadedCommandProcessor* aProcessor, const std::string& aName)
 {
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor::ThreadProc start, this==" << aProcessor << std::endl;
+#endif
     try
     {
         DependentProcessor dependentProcessor(aName);
-        while (!aProcessor->mDone)
+        while (!aProcessor->mDone.load())
         {
             std::unique_lock<std::mutex> lk(aProcessor->mQueueMutex);
-            aProcessor->mCondition.wait(lk,
-                [&]()
-                {
-                    return !aProcessor->mQueue.empty() || aProcessor->mDone;
-                });
+            while (aProcessor->mQueue.empty() && !aProcessor->mNotified.load())
+                aProcessor->mCondition.wait(lk);
             aProcessor->ProcessQueue(lk, dependentProcessor);
+            aProcessor->mNotified = false;
         }
         {
             std::unique_lock<std::mutex> lk(aProcessor->mQueueMutex);
@@ -78,6 +99,9 @@ void ThreadedCommandProcessor<DependentProcessor>::ThreadProc(ThreadedCommandPro
     {
         std::cerr << e.what() << std::endl;
     }
+#ifdef DEBUG_PRINT
+    std::cout << "ThreadedCommandProcessor::ThreadProc end, this==" << aProcessor << std::endl;
+#endif
 }
 
 template <typename DependentProcessor>

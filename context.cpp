@@ -5,14 +5,28 @@
 Context::Context(std::shared_ptr<CommandProcessor> commandProcessor)
     : mThread(ThreadProc, this, commandProcessor)
 {
+#ifdef DEBUG_PRINT
+    std::cout << "Context::Context, this==" << this << std::endl;
+#endif
+}
+
+Context::~Context()
+{
+#ifdef DEBUG_PRINT
+    std::cout << "Context::~Context, this==" << this << std::endl;
+#endif
+    Stop();
 }
 
 void Context::ProcessData(const char* data, std::size_t size)
 {
+    if (mDone.load())
+        return;
     {
         std::lock_guard<std::mutex> lk(mStreamMutex);
         mStream << std::string(data, size);
     }
+    mNotified = true;
     mCondition.notify_one();
 }
 
@@ -22,6 +36,7 @@ void Context::Stop()
     std::cout << "Context::Stop1, this==" << this << std::endl;
 #endif
     mDone = true;
+    mNotified = true;
 #ifdef DEBUG_PRINT
     std::cout << "Context::Stop2, this==" << this << std::endl;
 #endif
@@ -52,17 +67,18 @@ void Context::ProcessStream(std::unique_lock<std::mutex>& lk, std::shared_ptr<Co
 
 void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor)
 {
+#ifdef DEBUG_PRINT
+    std::cout << "Context::ThreadProc start, this==" << aContext << std::endl;
+#endif
     try
     {
-        while (!aContext->mDone)
+        while (!aContext->mDone.load())
         {
             std::unique_lock<std::mutex> lk(aContext->mStreamMutex);
-            aContext->mCondition.wait(lk,
-                [&]() ->bool
-                {
-                    return aContext->mDone;
-                });
+            while (aContext->mStream.str().empty() && !aContext->mNotified.load())
+                aContext->mCondition.wait(lk);
             aContext->ProcessStream(lk, aCommandProcessor);
+            aContext->mNotified = false;
         }
 #ifdef DEBUG_PRINT
         std::cout << "Context::ThreadProc1, this==" << aContext << std::endl;
@@ -83,4 +99,7 @@ void Context::ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aC
     {
         std::cerr << e.what() << std::endl;
     }
+#ifdef DEBUG_PRINT
+    std::cout << "Context::ThreadProc end, this==" << aContext << std::endl;
+#endif
 }

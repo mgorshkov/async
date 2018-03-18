@@ -53,15 +53,17 @@ static void RunBulk(async::handle_t handle, const char *data, std::size_t size)
 
 static void StopBulk(async::handle_t handle)
 {
-    std::shared_ptr<Context> context;
     {
-        std::lock_guard<std::mutex> lk(ContextMutex);
-        auto it = Contexts.find(handle);
-        if (it == Contexts.end())
-            return;
-        context = it->second;
+        std::shared_ptr<Context> context;
+        {
+            std::lock_guard<std::mutex> lk(ContextMutex);
+            auto it = Contexts.find(handle);
+            if (it == Contexts.end())
+                return;
+            context = it->second;
+        }
+        context->Stop();
     }
-    context->Stop();
     {
         std::lock_guard<std::mutex> lk(ContextMutex);
         auto it = Contexts.find(handle);

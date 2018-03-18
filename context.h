@@ -13,6 +13,7 @@ class Context
 {
 public:
     Context(std::shared_ptr<CommandProcessor> commandProcessor);
+    ~Context();
 
     void ProcessData(const char* data, std::size_t size);
 
@@ -24,9 +25,11 @@ private:
 
     static void ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor);
 
-    std::thread mThread;
     std::stringstream mStream;
     std::mutex mStreamMutex;
     std::condition_variable mCondition;
-    std::atomic<bool> mDone{false};
+    std::atomic_bool mDone{false};
+    std::atomic_bool mNotified{false};
+
+    std::thread mThread;
 };

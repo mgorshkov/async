@@ -41,4 +41,3 @@ std::string ReportWriter::GetFilename(const Command& command)
         << mCounters.mBlockCounter << Separator << seconds << Separator << this << ".log";
     return filename.str();
 }
-
