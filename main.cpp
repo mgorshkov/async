@@ -72,20 +72,45 @@ void run3()
 
 int main(int, char *[])
 {
-    auto result1 = std::async(std::launch::async, run1);
-    auto result2 = std::async(std::launch::async, run2);
-    auto result3 = std::async(std::launch::async, run3);
+//    auto result1 = std::async(std::launch::async, run1);
+//    auto result2 = std::async(std::launch::async, run2);
+//    auto result3 = std::async(std::launch::async, run3);
     std::size_t bulk = 5;
     h4 = async::connect(bulk);
-    h5 = async::connect(bulk);
-    async::receive(h1, "1", 1);
-    async::receive(h2, "1\n", 2);
-    async::receive(h4, "\n2\n3\n4\n5\n6\n{\na\n", 15);
-    async::receive(h5, "b\nc\nd\n}\n89\n", 11);
+//    h5 = async::connect(bulk);
+    async::receive(h4, "1", 1);
+    async::receive(h4, "1", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "2", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "3", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h5, "4", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "5", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "6", 1);
+    async::receive(h5, "\n", 1);
+    async::receive(h4, "{", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "a", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "b", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "c", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "d", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h5, "}", 1);
+    async::receive(h4, "\n", 1);
+    async::receive(h4, "8", 1);
+    async::receive(h5, "9", 1);
+    async::receive(h4, "\n", 1);
     async::disconnect(h4);
-    async::disconnect(h5);
-    result1.wait();
-    result2.wait();
-    result3.wait();
+//    async::disconnect(h5);
+//    result1.wait();
+//    result2.wait();
+//    result3.wait();
     return 0;
 }
