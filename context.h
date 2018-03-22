@@ -21,7 +21,8 @@ public:
 
 private:
     bool GetNextLine(std::string& line);
-    void ProcessStream(std::unique_lock<std::mutex>& lk, std::shared_ptr<CommandProcessor> aCommandProcessor);
+    void ProcessStream(std::shared_ptr<CommandProcessor> aCommandProcessor);
+    void ProcessStreamFinal(std::shared_ptr<CommandProcessor> aCommandProcessor);
 
     static void ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor);
 
