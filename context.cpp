@@ -54,8 +54,7 @@ void Context::Stop()
 bool Context::GetNextLine(std::string& line)
 {
     std::lock_guard<std::mutex> lk(mStreamMutex);
-    auto& stream = std::getline(mStream, line);
-    return !stream.eof();
+    return !!std::getline(mStream, line);
 }
 
 void Context::ProcessStream(std::shared_ptr<CommandProcessor> aCommandProcessor)
@@ -64,17 +63,20 @@ void Context::ProcessStream(std::shared_ptr<CommandProcessor> aCommandProcessor)
     while (true)
     {
 #ifdef DEBUG_PRINT
-        std::cout << "XXXX mDone=" << mDone.load() << std::endl;
+        std::cout << "Context::ProcessStream 1" << std::endl;
 #endif
         std::string linePart;
-        if (GetNextLine(linePart))
+        bool res = GetNextLine(linePart);
+        if (linePart.empty())
+            return;
+        if (res)
         {
             line += linePart;
             aCommandProcessor->ProcessLine(line);
 #ifdef DEBUG_PRINT
-            std::cout << "XXXX line=" << line << std::endl;
+            std::cout << "Context::ProcessStream 2, line=" << line << std::endl;
 #endif
-            break;
+            return;
         }
         line += linePart;
     }
@@ -85,8 +87,8 @@ void Context::ProcessStreamFinal(std::shared_ptr<CommandProcessor> aCommandProce
     std::string line;
     while (GetNextLine(line))
     {
-#ifdef DEBUG_PRINT            
-        std::cout << "Context::ThreadProcXXX" << line << std::endl;
+#ifdef DEBUG_PRINT
+        std::cout << "Context::ProcessStreamFinal" << line << std::endl;
 #endif
         aCommandProcessor->ProcessLine(line);
     }
