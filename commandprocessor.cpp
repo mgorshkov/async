@@ -2,10 +2,16 @@
 
 #include "commandprocessor.h"
 
-CommandProcessor::CommandProcessor(const std::string& aName, const CommandProcessors& dependentCommandProcessors)
-    : mName(aName)
-    , mDependentCommandProcessors(dependentCommandProcessors)
+CommandProcessor::CommandProcessor(const std::string& aName, const CommandProcessors& aDependentCommandProcessors)
+    : mContext(0)
+    , mName(aName)
+    , mDependentCommandProcessors(aDependentCommandProcessors)
 {
+}
+
+void CommandProcessor::SetContext(void* aContext)
+{
+    mContext = aContext;
 }
 
 void CommandProcessor::StartBlock()
@@ -22,31 +28,31 @@ void CommandProcessor::FinishBlock()
         dependentCommandProcessor->FinishBlock();
 }
 
-void CommandProcessor::ProcessLine(const std::string& line)
+void CommandProcessor::ProcessLine(const std::string& aLine)
 {
     for (auto dependentCommandProcessor : mDependentCommandProcessors)
-        dependentCommandProcessor->ProcessLine(line);
+        dependentCommandProcessor->ProcessLine(aLine);
 
     ++mCounters.mLineCounter;
 }
 
-void CommandProcessor::ProcessCommand(const Command& command)
+void CommandProcessor::ProcessCommand(const Command& aCommand)
 {
     for (auto dependentCommandProcessor : mDependentCommandProcessors)
-        dependentCommandProcessor->ProcessCommand(command);
+        dependentCommandProcessor->ProcessCommand(aCommand);
 
     ++mCounters.mCommandCounter;
 }
 
-void CommandProcessor::ProcessBatch(const CommandBatch& commandBatch)
+void CommandProcessor::ProcessBatch(const CommandBatch& aCommandBatch)
 {
     for (auto dependentCommandProcessor : mDependentCommandProcessors)
     {
-        dependentCommandProcessor->ProcessBatch(commandBatch);
+        dependentCommandProcessor->ProcessBatch(aCommandBatch);
     }
 
     ++mCounters.mBlockCounter;
-    mCounters.mCommandCounter += commandBatch.Size();
+    mCounters.mCommandCounter += aCommandBatch.Size();
 }
 
 void CommandProcessor::Stop()
@@ -67,7 +73,7 @@ void CommandProcessor::Stop()
 
 void CommandProcessor::DumpCounters() const
 {
-    std::cout << "Thread: " << mName << ", blocks: " << mCounters.mBlockCounter <<
+    std::cout << "Context: " << mContext << ", thread: " << mName << ", blocks: " << mCounters.mBlockCounter <<
         ", commands: " << mCounters.mCommandCounter;
 
     if (mCounters.mLineCounter != 0)

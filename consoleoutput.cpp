@@ -12,11 +12,11 @@ ConsoleOutput::~ConsoleOutput()
 {
 }
 
-void ConsoleOutput::ProcessBatch(const CommandBatch& commandBatch)
+void ConsoleOutput::ProcessBatch(const CommandBatch& aCommandBatch)
 {
-    Command command = MakeCommandFromBatch(commandBatch);
+    Command command = MakeCommandFromBatch(aCommandBatch);
 
     std::cout << command.mText << std::endl;
 
-    CommandProcessor::ProcessBatch(commandBatch);
+    CommandProcessor::ProcessBatch(aCommandBatch);
 }

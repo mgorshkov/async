@@ -14,10 +14,12 @@ template <typename DependentProcessor>
 class ThreadedCommandProcessor : public CommandProcessor
 {
 public:
-    ThreadedCommandProcessor(const std::string& aName, int aThreads = 1);
+    ThreadedCommandProcessor(const std::string& aName, int aThreadsCount = 1);
     ~ThreadedCommandProcessor();
 
-    void ProcessBatch(const CommandBatch& commandBatch) override;
+    void Start() override;
+
+    void ProcessBatch(const CommandBatch& aCommandBatch) override;
 
     void Stop() override;
 
@@ -28,6 +30,7 @@ private:
 
     void ProcessQueue(std::unique_lock<std::mutex>& lk, CommandProcessor& aDependentProcessor);
 
+    int mThreadsCount;
     std::queue<CommandBatch> mQueue;
     std::condition_variable mCondition;
     std::mutex mQueueMutex;

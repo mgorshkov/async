@@ -2,18 +2,13 @@
 
 /// Starts one thread for each dependent CommandProcessor
 template <typename DependentProcessor>
-ThreadedCommandProcessor<DependentProcessor>::ThreadedCommandProcessor(const std::string& aName, int aThreads)
-    : CommandProcessor("main")
+ThreadedCommandProcessor<DependentProcessor>::ThreadedCommandProcessor(const std::string& aName, int aThreadsCount)
+    : CommandProcessor(aName)
+    , mThreadsCount(aThreadsCount)
 {
 #ifdef DEBUG_PRINT
     std::cout << "ThreadedCommandProcessor::ThreadedCommandProcessor, this==" << this << std::endl;
 #endif
-    for (int i = 0; i < aThreads; ++i)
-    {
-        std::stringstream name;
-        name << aName << i;
-        mThreads.emplace_back(std::thread(ThreadProc, this, name.str()));
-    }
 }
 
 template<typename DependentProcessor>
@@ -26,7 +21,18 @@ ThreadedCommandProcessor<DependentProcessor>::~ThreadedCommandProcessor()
 }
 
 template <typename DependentProcessor>
-void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBatch& commandBatch)
+void ThreadedCommandProcessor<DependentProcessor>::Start()
+{
+    for (int i = 0; i < mThreadsCount; ++i)
+    {
+        std::stringstream name;
+        name << mName << i;
+        mThreads.emplace_back(std::thread(ThreadProc, this, name.str()));
+    }
+}
+
+template <typename DependentProcessor>
+void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBatch& aCommandBatch)
 {
     if (mDone.load())
         return;
@@ -35,13 +41,13 @@ void ThreadedCommandProcessor<DependentProcessor>::ProcessBatch(const CommandBat
 #endif
     {
         std::lock_guard<std::mutex> lk(mQueueMutex);
-        mQueue.push(commandBatch);
+        mQueue.push(aCommandBatch);
     }
     mCondition.notify_all();
 #ifdef DEBUG_PRINT
     std::cout << "ThreadedCommandProcessor notified, this==" << this << std::endl;
 #endif
-    CommandProcessor::ProcessBatch(commandBatch);
+    CommandProcessor::ProcessBatch(aCommandBatch);
 }
 
 template <typename DependentProcessor>
@@ -79,6 +85,10 @@ void ThreadedCommandProcessor<DependentProcessor>::ThreadProc(ThreadedCommandPro
     try
     {
         DependentProcessor dependentProcessor(aName);
+        dependentProcessor.SetContext(aProcessor->mContext);
+#ifdef DEBUG_PRINT
+        std::cout << "ThreadedCommandProcessor::ThreadProc 1, this==" << aProcessor << " " << aProcessor->mContext << std::endl;
+#endif
         while (!aProcessor->mDone.load())
         {
             std::unique_lock<std::mutex> lk(aProcessor->mQueueMutex);

@@ -2,22 +2,22 @@
 
 #include "inputprocessor.h"
 
-InputProcessor::InputProcessor(const CommandProcessors& dependentCommandProcessors)
-    : CommandProcessor("main", dependentCommandProcessors)
+InputProcessor::InputProcessor(const std::string& aName, const CommandProcessors& aDependentCommandProcessors)
+    : CommandProcessor(aName, aDependentCommandProcessors)
 {
-    assert(dependentCommandProcessors.size() != 0);
+    assert(aDependentCommandProcessors.size() != 0);
 }
 
-void InputProcessor::ProcessLine(const std::string& line)
+void InputProcessor::ProcessLine(const std::string& aLine)
 {
-    if (line == "{")
+    if (aLine == "{")
     {
         if (mBlockDepth++ == 0)
         {
             CommandProcessor::StartBlock();
         }
     }
-    else if (line == "}")
+    else if (aLine == "}")
     {
         if (--mBlockDepth == 0)
         {
@@ -26,10 +26,10 @@ void InputProcessor::ProcessLine(const std::string& line)
     }
     else
     {
-        Command command{line, std::chrono::system_clock::now()};
+        Command command{aLine, std::chrono::system_clock::now()};
         CommandProcessor::ProcessCommand(command);
     }
-    CommandProcessor::ProcessLine(line);
+    CommandProcessor::ProcessLine(aLine);
 }
 
 void InputProcessor::DumpCounters() const

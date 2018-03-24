@@ -20,9 +20,17 @@ static std::shared_ptr<CommandProcessor> CreateInputContext(std::size_t bulkSize
     auto consoleOutputThreadedProcessor = std::make_shared<ThreadedCommandProcessor<ConsoleOutput>>("log");
 
     CommandProcessors processors = {reportWritersThreadedProcessor, consoleOutputThreadedProcessor};
-    auto batchCommandProcessor = std::make_shared<BatchCommandProcessor>(bulkSize, processors);
+    auto batchCommandProcessor = std::make_shared<BatchCommandProcessor>("main", bulkSize, processors);
     CommandProcessors batchCommandProcessors = {batchCommandProcessor};
-    auto inputCommandProcessor = std::make_shared<InputProcessor>(batchCommandProcessors);
+    auto inputCommandProcessor = std::make_shared<InputProcessor>("main", batchCommandProcessors);
+    
+    reportWritersThreadedProcessor->SetContext(inputCommandProcessor.get());
+    consoleOutputThreadedProcessor->SetContext(inputCommandProcessor.get());
+    batchCommandProcessor->SetContext(inputCommandProcessor.get());
+
+    reportWritersThreadedProcessor->Start();
+    consoleOutputThreadedProcessor->Start();
+
     return inputCommandProcessor;
 }
 

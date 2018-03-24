@@ -12,17 +12,15 @@
 class Context
 {
 public:
-    Context(std::shared_ptr<CommandProcessor> commandProcessor);
+    Context(std::shared_ptr<CommandProcessor> aCommandProcessor);
     ~Context();
 
-    void ProcessData(const char* data, std::size_t size);
+    void ProcessData(const char* aData, std::size_t aSize);
 
     void Stop();
 
 private:
-    bool GetNextLine(std::string& line);
-    void ProcessStream(std::shared_ptr<CommandProcessor> aCommandProcessor);
-    void ProcessStreamFinal(std::shared_ptr<CommandProcessor> aCommandProcessor);
+    void ProcessStream(std::shared_ptr<CommandProcessor> aCommandProcessor, bool aFinish = false);
 
     static void ThreadProc(Context* aContext, std::shared_ptr<CommandProcessor> aCommandProcessor);
 

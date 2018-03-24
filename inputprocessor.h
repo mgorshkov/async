@@ -6,9 +6,9 @@
 class InputProcessor : public CommandProcessor
 {
 public:
-    InputProcessor(const CommandProcessors& dependentCommandProcessors);
+    InputProcessor(const std::string& aName, const CommandProcessors& aDependentCommandProcessors);
 
-    void ProcessLine(const std::string& line) override;
+    void ProcessLine(const std::string& aLine) override;
 
     void DumpCounters() const override;
 

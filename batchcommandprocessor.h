@@ -8,12 +8,12 @@
 class BatchCommandProcessor : public CommandProcessor
 {
 public:
-    BatchCommandProcessor(std::size_t bulkSize, const CommandProcessors& dependentCommandProcessors);
+    BatchCommandProcessor(const std::string& aName, std::size_t aBulkSize, const CommandProcessors& aDependentCommandProcessors);
 
     void StartBlock() override;
     void FinishBlock() override;
 
-    void ProcessCommand(const Command& command) override;
+    void ProcessCommand(const Command& aCommand) override;
     void Stop() override;
 
 private:

@@ -1,8 +1,8 @@
 #include "batchcommandprocessor.h"
 
-BatchCommandProcessor::BatchCommandProcessor(std::size_t bulkSize, const CommandProcessors& dependentCommandProcessors)
-    : CommandProcessor("main", dependentCommandProcessors)
-    , mBulkSize(bulkSize)
+BatchCommandProcessor::BatchCommandProcessor(const std::string& aName, std::size_t aBulkSize, const CommandProcessors& aDependentCommandProcessors)
+    : CommandProcessor(aName, aDependentCommandProcessors)
+    , mBulkSize(aBulkSize)
     , mBlockForced(false)
 {
 }
@@ -19,9 +19,9 @@ void BatchCommandProcessor::FinishBlock()
     DumpBatch();
 }
 
-void BatchCommandProcessor::ProcessCommand(const Command& command)
+void BatchCommandProcessor::ProcessCommand(const Command& aCommand)
 {
-    mCommandBatch.push_back(command);
+    mCommandBatch.push_back(aCommand);
 
     if (!mBlockForced && mCommandBatch.size() >= mBulkSize)
     {

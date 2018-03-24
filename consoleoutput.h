@@ -10,5 +10,5 @@ public:
     ConsoleOutput(const std::string& aName);
     ~ConsoleOutput();
 
-    void ProcessBatch(const CommandBatch& commandBatch) override;
+    void ProcessBatch(const CommandBatch& aCommandBatch) override;
 };

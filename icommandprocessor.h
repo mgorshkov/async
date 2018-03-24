@@ -12,6 +12,7 @@ public:
     virtual void ProcessCommand(const Command&) = 0;
     virtual void ProcessBatch(const CommandBatch&) = 0;
 
+    virtual void Start() = 0;
     virtual void Stop() = 0;
 
     virtual void DumpCounters() const = 0;
