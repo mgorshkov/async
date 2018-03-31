@@ -80,7 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><h2>Задание 11</h2>
 <h3>Условие</h3>
-<p>Основная цель переработать Задание 7 так, чтобы ввод данных контроллировался внешним кодом. Интерфейс описан в файле <a class="el" href="async_8h.html">async.h</a>. Инициатором обмена будет выступать внешний код, вместо привычной входной точки <a class="el" href="main_8cpp.html#a81ce304348a420752ee080480d2b3095">main()</a> будет три - <a class="el" href="namespaceasync.html#a242e53dc8573299551dd963d670b6bd5">connect()</a>, <a class="el" href="namespaceasync.html#aa1b54e89e951488a8dd79e720f3d8f8b">receive()</a> и <a class="el" href="namespaceasync.html#a04233bf9bec326f7bcb4e1a9d5b8ee9d">disconnect()</a>.</p>
+<p>Основная цель переработать <a href="https://github.com/mgorshkov/bulk">Заданиe 7</a> так, чтобы ввод данных контроллировался внешним кодом. Интерфейс описан в файле <a class="el" href="async_8h.html">async.h</a>. Инициатором обмена будет выступать внешний код, вместо привычной входной точки <a class="el" href="main_8cpp.html#a81ce304348a420752ee080480d2b3095">main()</a> будет три - <a class="el" href="namespaceasync.html#a242e53dc8573299551dd963d670b6bd5">connect()</a>, <a class="el" href="namespaceasync.html#aa1b54e89e951488a8dd79e720f3d8f8b">receive()</a> и <a class="el" href="namespaceasync.html#a04233bf9bec326f7bcb4e1a9d5b8ee9d">disconnect()</a>.</p>
 <p>Порядок вызова следующий:</p>
 <ul>
 <li>Вызывается <a class="el" href="namespaceasync.html#a242e53dc8573299551dd963d670b6bd5">connect()</a> с размером блока команд. Сохраняется значение возврата. Значение никак не интерпретируется и служит только для передачи контекста;</li>
@@ -92,7 +92,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>В зависимости от внутренней реализации может возникнуть требование иметь одинаковый размер блока для всех команд. Нет цели вносить столь глубокие изменения. Если потенциальная возможность именть разный размеры очереди влечет глубокую переработку функция <a class="el" href="namespaceasync.html#a242e53dc8573299551dd963d670b6bd5">connect()</a> должна вернуть nullptr.</p>
 <p>Вызовы могут осуществляться из разнных потоков, однако вызовы с одинаковым контекстом выполняются из одного и того же потока.</p>
 <p>Опционально реализовать возможность вызывать все функции из любых потоков.</p>
-<p>Опционально взять за основу вместо однопоточной версии из Задания 7 многопоточную реализацию из Задания 10.</p>
+<p>Опционально взять за основу вместо однопоточной версии из <a href="https://github.com/mgorshkov/bulk">Задания 7</a> многопоточную реализацию из <a href="https://github.com/mgorshkov/bulkmt">Задания 10</a>.</p>
 <h3>Требования к реализации</h3>
 <p>Результатом работы должна стать библиотека, устанавливаемая по стандартному пути. Библиотека должна называться <em>libasync.so</em> и находиться в пакете <em>async</em>.</p>
 <p>Результат работы должен быть опубликован на bintray.</p>
